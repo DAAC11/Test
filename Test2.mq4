@@ -10,7 +10,8 @@
 #include "..\\GitHub\\david1.mq4"
 input int TGR = 200;
 input int STP = 1000;
-input int POS= 2;
+input int POS= 15;
+input double MaxFlotante = 20;
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -37,12 +38,20 @@ int inicio=0;
 void OnTick()
   {
    
-   
-   if(OrdersTotal()<=20 /*&& inicio <10*/)
+   //Abre primeras entradas
+   if(inicio <1)
      {
       Buy(0.01,TGR,STP);
       Sell(0.01,TGR,STP);
       inicio++;
+     }
+   if(OrdersTotal()<=POS && LastType()=="OP_BUY")
+     {
+      Sell(0.01,TGR,STP);
+     }
+    if(OrdersTotal()<=POS && LastType()=="OP_SELL")
+     {
+      Buy(0.01,TGR,STP);
      }
    
     
@@ -50,11 +59,15 @@ void OnTick()
    double Equity = AccountEquity()-Balance;
    int OpenPositions = OrdersTotal();
    string ENTER= "\n";
+  
    
    Comment("Balance: ",Balance,ENTER,
            "Equity: ",Equity,ENTER,
            "Open Positions: ",OpenPositions,ENTER,
            "Variable de control: ",inicio,ENTER,
+           "Ordenes abiertas Buy: ",OpenBuys(),ENTER,
+           "Ordenes abiertas Sell: ",OpenSells(),ENTER,
+           "Ultimo tipo de orden abiertas : ",LastType()," ",LastTicket(),ENTER,
            OrdenesAbiertas(),OrdenesCerradas());   
   }
 //+------------------------------------------------------------------+
