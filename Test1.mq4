@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 #include "..\\GitHub\\david1.mq4"
-input int TGR = 200;
-input int STP = 100;
+input int TGR = 100;
+input int STP = 1000;
 input int positions = 5;
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -35,13 +35,12 @@ void OnDeinit(const int reason)
 
 void OnTick()
   {
-   if(OrdersTotal()<=5)
+   if(OrdersTotal()<=positions)
      {
-      Buy(0.01,200,1000);
-      Sell(0.01,200,1000);
-      Buy(0.01,200,1000);
-      Sell(0.01,200,1000);
-      Buy(0.01,200,1000);
+      Buy(0.01,TGR,STP);
+      Sell(0.01,TGR*2,STP);
+      Buy(0.01,TGR*3,STP);
+      Sell(0.01,TGR*4,STP);
      }
     
    double Balance = AccountBalance();
@@ -49,8 +48,6 @@ void OnTick()
    int OpenPositions = OrdersTotal();
    string ENTER= "\n";
    
-   Comment("Balance: ",Balance,ENTER,
-           "Equity: ",Equity,ENTER,
-           "Open Positions: ",OpenPositions );
+   Comment("Balance: ",Balance,ENTER,"Equity: ",Equity,ENTER,"Open Positions: ",OpenPositions);
   }
 //+------------------------------------------------------------------+
