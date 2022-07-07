@@ -34,7 +34,7 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
 //+------------------------------------------------------------------+
-
+double MaxFlotante =0;
 
 void OnTick()
   {
@@ -48,22 +48,30 @@ void OnTick()
       LiquidadorSell();
       Sleep(10000);
      }
-   if(LastType()=="OP_BUY"&& Flotante()<-1&&OrdersTotal()==1)
+   if(LastTypeOpen()=="OP_BUY"&& Flotante()<-1&&OrdersTotal()==1)
      {
       Sell(Lotes*2,TGR,STP);
      }
-   if(LastType()=="OP_SELL"&& Flotante()<-3&&OrdersTotal()==2)
+   if(LastTypeOpen()=="OP_SELL"&& Flotante()<-3&&OrdersTotal()==2)
      {
       Buy(Lotes*3,TGR,STP);
      }
-   if(LastType()=="OP_BUY"&& Flotante()<-1&&OrdersTotal()==3)
+   if(LastTypeOpen()=="OP_BUY"&& Flotante()<-5&&OrdersTotal()==3)
      {
       Sell(Lotes*4,TGR,STP);
      }
    
    
-   Comment("Ultimo Type: ", LastType(),ENTER,
-           "Flotante: ", Flotante()
+ if(Flotante()<MaxFlotante)
+     {
+      MaxFlotante=NormalizeDouble(Flotante(),2);
+     }
+   
+   Comment("Ultimo Type: ", LastTypeOpen(),ENTER,
+           "Flotante: ", NormalizeDouble(Flotante(),2),ENTER,
+           "Open Positios:  ", OrdersTotal(),ENTER,
+           "Minimo Flotante: ", MaxFlotante,
+           OrdenesAbiertas()
             );
    
   }
