@@ -7,7 +7,7 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
-#include "..\\GitHub\\david1.mq4"
+#include "..\\Experts\\david1.mq4"
 input int TGR = 200;
 input int STP = 1000;
 input int POS= 15;
@@ -45,11 +45,11 @@ void OnTick()
       Sell(0.01,TGR,STP);
       inicio++;
      }
-   if(OrdersTotal()<=POS && LastType()=="OP_BUY")
+   if(OrdersTotal()<=POS && LastTypeClose()=="OP_BUY")
      {
       Sell(0.01,TGR,STP);
      }
-    if(OrdersTotal()<=POS && LastType()=="OP_SELL")
+    if(OrdersTotal()<=POS && LastTypeClose()=="OP_SELL")
      {
       Buy(0.01,TGR,STP);
      }
@@ -67,7 +67,7 @@ void OnTick()
            "Variable de control: ",inicio,ENTER,
            "Ordenes abiertas Buy: ",OpenBuys(),ENTER,
            "Ordenes abiertas Sell: ",OpenSells(),ENTER,
-           "Ultimo tipo de orden abiertas : ",LastType()," ",LastTicket(),ENTER,
+           "Ultimo tipo de orden abiertas : ",LastTypeClose()," ",LastTicketClose(),ENTER,
            OrdenesAbiertas(),OrdenesCerradas());   
   }
 //+------------------------------------------------------------------+
