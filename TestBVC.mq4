@@ -7,7 +7,7 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
-#include "..\\GitHub\\david1.mq4"
+#include "..\\Experts\\david1.mq4"
 input double Gestion =-1;
 input double Lotes=0.01;
 input int TGR =200;
