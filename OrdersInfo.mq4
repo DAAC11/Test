@@ -33,18 +33,14 @@ string LastOPType(int OPType)//Funcionando
  
    return StrType;  
 }
+
+
 int LastTicketOpen(){//Funcionando
-   int last =0;
-   for(int i=OrdersTotal()-1;i>0;i--)
-     {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+  int last=0;
+      if(OrderSelect(OrdersTotal()-1,SELECT_BY_POS,MODE_TRADES))
         {
-         if(OrderTicket()>last)
-           {
-            last=OrderTicket();
-           }
-        }
-     }
+         last=OrderTicket();
+        } 
    return last;
 }
 
@@ -147,6 +143,7 @@ string LastOPProfitOpen()//Funcionando
       
       return Last;
    }
+
 
 int OpenBuys(){
    int nBuys =0;
