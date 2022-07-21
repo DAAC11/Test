@@ -21,13 +21,57 @@ int Buy(double Lots,double Target,double Stop)//Funcionando
    int O =OrderSend(NULL,OP_BUY,Lots,Ask,3,Ask-(Stop*Point),Ask+(Target*Point),NULL,3,0,clrGreen);
    return O;
   }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 int Sell(double Lots,double Target,double Stop)//Funcionando
   {
    int V =OrderSend(NULL,OP_SELL,Lots,Bid,3,Bid+(Stop*Point),Bid-(Target*Point),NULL,3,0,clrRed);
    return V;
   }
-void LiquidadorBuy(){
-   for(int i=OrdersTotal()-1;i>0;i--)
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void BE(int Ticket,double puntos)
+  {
+    if(OrderSelect(Ticket,SELECT_BY_TICKET))
+      {
+       if(OrderType()==OP_BUY)
+         {
+          OrderModify(OrderTicket(),
+                      OrderOpenPrice(),
+                      (OrderOpenPrice()+(puntos*Point())),
+                      OrderTakeProfit(),
+                      0,
+                      clrAquamarine);
+                    
+         }
+       else
+         {
+          Print(GetLastError());
+         }
+       if(OrderType()==OP_SELL)
+         {
+          OrderModify(OrderTicket(),
+                      OrderOpenPrice(),
+                      (OrderOpenPrice()-(puntos*Point())),
+                      OrderTakeProfit(),
+                      0,
+                      clrAquamarine);
+         }
+       else
+         {
+          Print(GetLastError());
+         }
+      }
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void LiquidadorBuy()
+  {
+   for(int i=OrdersTotal()-1; i>0; i--)
      {
       OrderSelect(i,SELECT_BY_POS,MODE_TRADES);
       if(OrderType()==OP_BUY)
@@ -35,11 +79,15 @@ void LiquidadorBuy(){
          OrderClose(OrderTicket(),OrderLots(),Bid,3,clrWhite);
          Print("Liquidador Buy");
         }
-      
+
      }
   }
-void LiquidadorSell(){
-   for(int i=OrdersTotal()-1;i>0;i--)
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void LiquidadorSell()
+  {
+   for(int i=OrdersTotal()-1; i>0; i--)
      {
       OrderSelect(i,SELECT_BY_POS,MODE_TRADES);
       if(OrderType()==OP_SELL)
@@ -47,6 +95,7 @@ void LiquidadorSell(){
          OrderClose(OrderTicket(),OrderLots(),Ask,3,clrMaroon);
          Print("Liquidador Sell");
         }
-      
+
      }
   }
+//+------------------------------------------------------------------+
