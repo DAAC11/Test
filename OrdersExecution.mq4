@@ -35,82 +35,94 @@ int Sell(double Lots,double Target,double Stop)//Funcionando
 //+------------------------------------------------------------------+
 void BE(int Ticket,double puntos)
   {
+
    if(OrderSelect(Ticket,SELECT_BY_TICKET))
      {
       if(OrderType()==OP_BUY)
         {
-         OrderModify(OrderTicket(),
-                     OrderOpenPrice(),
-                     (OrderOpenPrice()+(puntos*Point())),
-                     OrderTakeProfit(),
-                     0,
-                     clrAquamarine);
-
+         if(OrderStopLoss()<OrderOpenPrice())
+           {
+            OrderModify(OrderTicket(),
+                        OrderOpenPrice(),
+                        (OrderOpenPrice()+(puntos*Point())),
+                        OrderTakeProfit(),
+                        0,
+                        clrAquamarine);
+           }
         }
-      else
+      /*else
         {
          Print(GetLastError());
-        }
+        }*/
+
       if(OrderType()==OP_SELL)
         {
-         OrderModify(OrderTicket(),
-                     OrderOpenPrice(),
-                     (OrderOpenPrice()-(puntos*Point())),
-                     OrderTakeProfit(),
-                     0,
-                     clrAquamarine);
+         if(OrderStopLoss()>OrderOpenPrice())
+           {
+            OrderModify(OrderTicket(),
+                        OrderOpenPrice(),
+                        (OrderOpenPrice()-(puntos*Point())),
+                        OrderTakeProfit(),
+                        0,
+                        clrAquamarine);
+           }
         }
-      else
+      /*else
         {
          Print(GetLastError());
-        }
+        }*/
      }
+
+
   }
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 void TRSTP(int Ticket,double puntos)
   {
    if(OrderSelect(Ticket,SELECT_BY_TICKET,MODE_TRADES))
+     {
+      if(OrderSymbol()==Symbol())
         {
-         if(OrderSymbol()==Symbol())
+         if(OrderType()==OP_BUY)
            {
-            if(OrderType()==OP_BUY)
+            if(OrderStopLoss()<Ask-(puntos*Point))
               {
-               if(OrderStopLoss()<Ask-(puntos*Point))
-                 {
-                  OrderModify(
+               OrderModify(
                   OrderTicket(),
                   OrderOpenPrice(),
                   Ask-(puntos*Point),
                   OrderTakeProfit(),
                   0,Blue);
-                 }
               }
            }
+        }
 
-      }
-    if(OrderSelect(Ticket,SELECT_BY_TICKET,MODE_TRADES))
+     }
+   if(OrderSelect(Ticket,SELECT_BY_TICKET,MODE_TRADES))
+     {
+      if(OrderSymbol()==Symbol())
         {
-         if(OrderSymbol()==Symbol())
+         if(OrderType()==OP_SELL)
            {
-            if(OrderType()==OP_SELL)
+            if(OrderStopLoss()>Bid+(puntos*Point))
               {
-               if(OrderStopLoss()>Bid+(puntos*Point))
-                 {
-                  OrderModify(
+               OrderModify(
                   OrderTicket(),
                   OrderOpenPrice(),
                   Bid+(puntos*Point),
                   OrderTakeProfit(),
                   0,Blue);
-                 }
               }
            }
+        }
 
-      }
+     }
   }
 //+------------------------------------------------------------------+
 //|                                                                  |

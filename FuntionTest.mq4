@@ -16,7 +16,7 @@
 
 
 input double Lotes=0.01;
-input int TGR =1000;
+input int TGR =200;
 input int STP =200;
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -24,7 +24,7 @@ input int STP =200;
 int OnInit()
   {
 //---
-   
+
 //---
    return(INIT_SUCCEEDED);
   }
@@ -34,7 +34,7 @@ int OnInit()
 void OnDeinit(const int reason)
   {
 //---
-   
+
   }
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
@@ -42,29 +42,41 @@ void OnDeinit(const int reason)
 bool Flag= true;
 int SaldoInicial;
 bool Hedge = false;
+int Contador =0;
 
 
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 void OnTick()
   {
-   //Slado inicial
+//Slado inicial
    if(Flag)
      {
       SaldoInicial=AccountBalance();
       Flag=false;
      }
-   
+
    if(OrdersTotal()==0)
      {
-      Sell(Lotes,TGR,STP);
-    
-     }
-   
-   if(LastOPProfitOpen()>2.5)
-     {
-      TRSTP(LastTicketOpen(),200);
+      if(OrdersHistoryTotal()%2!=0)
+        {
+         Sell(Lotes,TGR,STP);
+        }
+      else
+        {
+         Buy(Lotes,TGR,STP);
+        }
+
      }
 
-   //Informacion en pantalla
+   if(LastOPProfitOpen()>1.5)
+     {
+      BE(LastTicketOpen(),50);
+      Contador++;
+     }
+
+//Informacion en pantalla
    Comment("Ordenes Abiertas: ", OrdersTotal(),"/",OrdersHistoryTotal(),ENTER,
            "Ultima Ordern: ",LastTypeClose(),ENTER,
            "Ultimo Resultado: ",LastOPProfitClose(),ENTER,
@@ -72,8 +84,9 @@ void OnTick()
            "Saldo Inicial: ",SaldoInicial,ENTER,
            "Balance: ",AccountBalance(),ENTER,
            "Flotante: ",Flotante(),ENTER,
-           
-         
+           "Contador: ",Contador,ENTER,
+
+
 
            OrdenesAbiertas(),
            OrdenesCerradas());
