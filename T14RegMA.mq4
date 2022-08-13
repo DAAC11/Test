@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                                  FuntionTest.mq4 |
+//|                                                      14RegMA.mq4 |
 //|                                                            David |
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -7,6 +7,9 @@
 #property link      ""
 #property version   "1.00"
 #property strict
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
 
 #include "..\\Experts\\OrdersExecution.mq4"
 #include "..\\Experts\\OrdersInfo.mq4"
@@ -14,10 +17,12 @@
 #include "..\\Experts\\ExFuntions.mq4"
 #include "..\\Experts\\Hedge.mq4"
 
-
+input double Gestion =-1;
 input double Lotes=0.01;
-input int TGR =400;
+input int TGR =200;
 input int STP =200;
+
+
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -41,9 +46,12 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 bool Flag= true;
 int SaldoInicial;
-bool Hedge = false;
-int Contador =0;
-int Contador2 =0;
+bool Signal=false;
+double sumaP=0;
+double AVG=0;
+int H=0;
+int S=0;
+int periodos=150;
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -55,46 +63,58 @@ void OnTick()
      {
       SaldoInicial=AccountBalance();
       Flag=false;
+
      }
 
-   if(OrdersTotal()==0)
+
+//Comparador de media y Precio
+double array[1];
+ArrayResize(array,periodos+1);
+for(int i=50;i>0;i--)
+  {
+   array[i]=MathAbs(iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,i)-Close[i]);
+  }
+sumaP= SumaArray(array);
+AVG= sumaP/50;
+double media = iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,0);
+
+//Apertura de ordenes
+   if(OrdersTotal()==0 )
      {
-      if(OrdersHistoryTotal()%2!=0)
+      if(media>Open[0])
         {
-         Sell(Lotes,TGR,STP);
+         if(MathAbs(media-Close[0])>AVG)
+           {
+            Sell(Lotes,TGR,STP);
+           }
         }
-      else
+      if(media<Close[0])
         {
-         Buy(Lotes,TGR,STP);
+         if(MathAbs(media-Close[0])>AVG)
+           {
+            Buy(Lotes,TGR,STP);
+           }
         }
-
      }
 
-   if(LastOPProfitOpen()>1.5)
-     {
-      BE(LastTicketOpen(),50);
-      Contador++;
-     }
-   if(LastOPProfitOpen()>2.5)
-     {
-      TRSTP(LastTicketOpen(),100);
-      Contador2--;
-     }
+
+
 
 //Informacion en pantalla
    Comment("Ordenes Abiertas: ", OrdersTotal(),"/",OrdersHistoryTotal(),ENTER,
            "Ultima Ordern: ",LastTypeClose(),ENTER,
            "Ultimo Resultado: ",LastOPProfitClose(),ENTER,
-           "Ultimo ticket : ",LastTicketOpen(),ENTER,
+           "Ultimo Resultado : ",LastOPProfitOpen(),ENTER,
            "Saldo Inicial: ",SaldoInicial,ENTER,
            "Balance: ",AccountBalance(),ENTER,
            "Flotante: ",Flotante(),ENTER,
-           "Contador: ",Contador,ENTER,
-           "Contador: ",Contador2,ENTER,
-
+          
+           "Suma: ",sumaP,ENTER,
+           "AVG: ",AVG,ENTER,
 
 
            OrdenesAbiertas(),
            OrdenesCerradas());
+
   }
 //+------------------------------------------------------------------+

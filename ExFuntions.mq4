@@ -35,12 +35,33 @@ string PrintArray(int &Array[])
    string salida ="[";
    for(int i=ArraySize(Array)-1; i>=0; i--)
      {
-      salida += i+",";
+      salida += Array[i]+",";
      }
    salida+="]";
 
    return salida;
   }
+string PrintArray(double &Array[])
+  {
+   string salida ="[";
+   for(int i=ArraySize(Array)-1; i>=0; i--)
+     {
+      salida += Array[i]+",";
+     }
+   salida+="]";
+
+   return salida;
+  }
+double SumaArray(double &Array[]){
+   double acc=0;
+   
+   for(int i=ArraySize(Array)-1;i>0;i--)
+     {
+      acc+=Array[i];
+     }
+  return acc;
+
+}
 //+------------------------------------------------------------------+
 /*string OpenOrders(){
 
