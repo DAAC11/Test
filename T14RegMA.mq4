@@ -51,7 +51,7 @@ double sumaP=0;
 double AVG=0;
 int H=0;
 int S=0;
-int periodos=150;
+int periodos=100;
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -70,12 +70,12 @@ void OnTick()
 //Comparador de media y Precio
 double array[1];
 ArrayResize(array,periodos+1);
-for(int i=50;i>0;i--)
+for(int i=periodos;i>0;i--)
   {
    array[i]=MathAbs(iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,i)-Close[i]);
   }
 sumaP= SumaArray(array);
-AVG= sumaP/50;
+AVG= sumaP/periodos;
 double media = iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,0);
 
 //Apertura de ordenes
@@ -85,14 +85,14 @@ double media = iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,0);
         {
          if(MathAbs(media-Close[0])>AVG)
            {
-            Sell(Lotes,TGR,STP);
+            Buy(Lotes,TGR,STP);
            }
         }
       if(media<Close[0])
         {
          if(MathAbs(media-Close[0])>AVG)
            {
-            Buy(Lotes,TGR,STP);
+            Sell(Lotes,TGR,STP);
            }
         }
      }
