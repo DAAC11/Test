@@ -51,7 +51,7 @@ double sumaP=0;
 double AVG=0;
 int H=0;
 int S=0;
-int periodos=100;
+int periodos=199;
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -72,11 +72,11 @@ double array[1];
 ArrayResize(array,periodos+1);
 for(int i=periodos;i>0;i--)
   {
-   array[i]=MathAbs(iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,i)-Close[i]);
+   array[i]=MathAbs(iMA(NULL,0,50,0,MODE_SMA,PRICE_MEDIAN,i)-Close[i]);
   }
 sumaP= SumaArray(array);
 AVG= sumaP/periodos;
-double media = iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,0);
+double media = iMA(NULL,0,50,0,MODE_SMA,PRICE_MEDIAN,0);
 
 //Apertura de ordenes
    if(OrdersTotal()==0 )
@@ -109,7 +109,7 @@ double media = iMA(NULL,0,200,0,MODE_SMA,PRICE_MEDIAN,0);
            "Balance: ",AccountBalance(),ENTER,
            "Flotante: ",Flotante(),ENTER,
           
-           "Suma: ",sumaP,ENTER,
+           "Suma MA: ",sumaP,ENTER,
            "AVG: ",AVG,ENTER,
 
 
