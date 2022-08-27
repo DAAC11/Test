@@ -238,3 +238,33 @@ int OpenSells()
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
+double LastOPOpenPrice()//Funcionando
+  {
+
+   double Last=0;
+   if(OrderSelect(LastTicketOpen(),SELECT_BY_TICKET,MODE_TRADES))
+     {
+      Last = OrderOpenPrice();
+     }
+
+   return Last;
+  }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+/*bool OpenPiceWait(double price)//Funcionando
+  {
+   //Regresa true si encuentra alguna coincidencia
+   bool Last=false;
+   for(int i=OrdersTotal()-1;i>0;i--)
+     {
+      if(OrderSelect(i,SELECT_BY_POS,MODE))
+        {
+         
+        }
+     }
+
+   return Last;
+  }*/
+//+------------------------------------------------------------------+

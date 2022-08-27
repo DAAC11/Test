@@ -24,6 +24,40 @@ int Buy(double Lots,double Target,double Stop)//Funcionando
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
+int Sell_STP(double Lots,double Target,double Stop,double OpenPrice)//Funcionando
+  {
+   int V =OrderSend(NULL,OP_SELLSTOP,Lots,OpenPrice,3,Bid+(Stop*Point),Bid-(Target*Point),NULL,3,0,clrRed);
+   return V;
+  }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int Buy_STP(double Lots,double Target,double Stop,double OpenPrice)//Funcionando
+  {
+   int O =OrderSend(NULL,OP_BUYSTOP,Lots,OpenPrice,3,Ask-(Stop*Point),Ask+(Target*Point),NULL,3,0,clrGreen);
+   return O;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int Sell_LMT(double Lots,double Target,double Stop)//Funcionando
+  {
+   int V =OrderSend(NULL,OP_SELLLIMIT,Lots,Bid,3,Bid+(Stop*Point),Bid-(Target*Point),NULL,3,0,clrRed);
+   return V;
+  }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int Buy_LMT(double Lots,double Target,double Stop)//Funcionando
+  {
+   int O =OrderSend(NULL,OP_BUYLIMIT,Lots,Ask,3,Ask-(Stop*Point),Ask+(Target*Point),NULL,3,0,clrGreen);
+   return O;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 int Sell(double Lots,double Target,double Stop)//Funcionando
   {
    int V =OrderSend(NULL,OP_SELL,Lots,Bid,3,Bid+(Stop*Point),Bid-(Target*Point),NULL,3,0,clrRed);

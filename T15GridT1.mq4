@@ -18,6 +18,8 @@
 input double Lotes=0.01;
 input int TGR =400;
 input int STP =200;
+input int Grids =20;// Numero de Grids
+input int TGrids = 50;//Distancia entre Grids
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -41,9 +43,16 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 bool Flag= true;
 int SaldoInicial;
-bool Hedge = false;
-int Contador =0;
-int Contador2 =0;
+double PrecioInicial=0;
+double GridsA[];
+double GridsB[];
+int GridArrayPrint =0;
+double GridBloqueado =0;
+double GridBloqueadoD =0;
+double PrecioInicialD =0;
+int GridPosA =0;
+int GridPosB =0;
+int GridActual =GridPosA+GridPosB;
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -54,37 +63,105 @@ void OnTick()
    if(Flag)
      {
       SaldoInicial=AccountBalance();
+
+      //entrada inicial
+      if(OrdersTotal()==0)
+        {
+         Buy(Lotes,TGrids,TGrids*10);
+         Sell(Lotes,TGrids,TGrids*10);
+        }
+
       Flag=false;
      }
 
-   if(OrdersTotal()==0)
+
+//Precio inicial
+   if(PrecioInicial==0)
      {
-      if(OrdersHistoryTotal()%2!=0)
+      if(OrderSelect(LastTicketOpen(),SELECT_BY_TICKET))
         {
-         Sell(Lotes,TGR,STP);
+         PrecioInicial= OrderOpenPrice();
+         GridBloqueado=PrecioInicial;
         }
-      else
+     }
+
+//Control de Grids
+
+   if(GridArrayPrint ==0)
+     {
+      //Arrays Grids
+      ArrayResize(GridsA,(Grids/2)+1);
+      ArrayResize(GridsB,(Grids/2)+1);
+      //rellenar array alciasta
+      double AccA= PrecioInicial;
+      for(int i=ArraySize(GridsA)-1; i>0; i--)
         {
-         Buy(Lotes,TGR,STP);
-         ObjCreateLine(Ask,"Line1",clrCyan);
+         GridsA[i]=PrecioInicial+(TGrids*(i*Point));
         }
+      //rellenar array bajista
+      double AccB= PrecioInicial;
+      for(int i=ArraySize(GridsB)-1; i>0; i--)
+        {
+         GridsB[i]=PrecioInicial-(TGrids*(i*Point));
+        }
+      //dibujar Grids alciastas
+      for(int i= ArraySize(GridsA)-1; i>0; i--)
+        {
+         ObjCreateLine(GridsA[i],"line"+i+"A",clrRed);
+
+        }
+      //dibujar Grids alciastas
+      for(int i= ArraySize(GridsB)-1; i>0; i--)
+        {
+         ObjCreateLine(GridsB[i],"line"+i+"B",clrGreen);
+
+        }
+      GridArrayPrint=1;
 
      }
 
+
+//Entradas
+
+
+//Dibujar Grid Bloqueado
+
+   if(GridBloqueado!=0)
+     {
+      if(GridBloqueadoD!=GridBloqueado)
+        {
+         ObjCreateLine(GridBloqueado,"Grid Bloqueado",clrViolet);
+        }
+     }
+//Dibujar Grid Inicial
+
+   if(PrecioInicial!=0)
+     {
+      if(PrecioInicialD!=PrecioInicial)
+        {
+         ObjCreateLine(PrecioInicial,"PrecioInicial",clrAqua);
+        }
+     }
 //Informacion en pantalla
-   Comment("Ordenes Abiertas: ", OrdersTotal(),"/",OrdersHistoryTotal(),ENTER,
+   Comment("Ordenes Abiertas: ", OrdersTotal(),ENTER,
            "Ultima Ordern: ",LastTypeClose(),ENTER,
            "Ultimo Resultado: ",LastOPProfitClose(),ENTER,
            "Ultimo ticket : ",LastTicketOpen(),ENTER,
            "Saldo Inicial: ",SaldoInicial,ENTER,
            "Balance: ",AccountBalance(),ENTER,
            "Flotante: ",Flotante(),ENTER,
-           "Contador: ",Contador,ENTER,
-           "Contador: ",Contador2,ENTER,
-
-
+           "Precio inial: ",PrecioInicial,ENTER,
+           "Array A: ",PrintArray(GridsA),ENTER,
+           "Array B: ",PrintArray(GridsB),ENTER,
+           "Grid Actual ",GridActual,ENTER,
+           "GridA ",GridPosA,ENTER,
+           "GridB ",GridPosB,ENTER,
 
            OrdenesAbiertas(),
            OrdenesCerradas());
   }
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+
 //+------------------------------------------------------------------+
