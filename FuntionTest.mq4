@@ -18,6 +18,8 @@
 input double Lotes=0.01;
 input int TGR =400;
 input int STP =200;
+input int Grids =10;// Numero de Grids
+input int Puntos = 100;//Distancia entre Grids
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -45,6 +47,21 @@ bool Hedge = false;
 int Contador =0;
 int Contador2 =0;
 
+
+double PrecioInicial=0;
+double GridsA[];
+double GridsB[];
+string Objetos[];
+int GridArrayPrint =0;
+double GridBloqueado =0;
+double GridBloqueadoD =0;
+double PrecioInicialD =0;
+int GridPosA =0;
+int GridPosB =0;
+int GridActual =GridPosA+GridPosB;
+
+
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -56,20 +73,27 @@ void OnTick()
       SaldoInicial=AccountBalance();
       Flag=false;
      }
-
    if(OrdersTotal()==0)
      {
-      if(OrdersHistoryTotal()%2!=0)
-        {
-         Sell(Lotes,TGR,STP);
-        }
-      else
-        {
-         Buy(Lotes,TGR,STP);
-         ObjCreateLine(Ask,"Line1",clrCyan);
-        }
-
+      Buy(0.01,100,100);
      }
+   if(PrecioInicial==0)
+     {
+      if(OrderSelect(LastTicketOpen(),SELECT_BY_TICKET))
+        {
+         PrecioInicial= OrderOpenPrice();
+         GridBloqueado=PrecioInicial;
+        }
+     }
+
+
+   if(GridArrayPrint==0)
+     {
+      ObjCreateGrids(PrecioInicial,Grids,Puntos,GridsA,GridsB,Objetos);
+
+      GridArrayPrint++;
+     }
+
 
 //Informacion en pantalla
    Comment("Ordenes Abiertas: ", OrdersTotal(),"/",OrdersHistoryTotal(),ENTER,
@@ -80,7 +104,10 @@ void OnTick()
            "Balance: ",AccountBalance(),ENTER,
            "Flotante: ",Flotante(),ENTER,
            "Contador: ",Contador,ENTER,
-           "Contador: ",Contador2,ENTER,
+           "GridsA: ",PrintArray(GridsA),ENTER,
+           "GridsB: ",PrintArray(GridsB),ENTER,
+           "Objetos: ",PrintArray(Objetos),ENTER,
+           
 
 
 

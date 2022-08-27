@@ -46,6 +46,7 @@ int SaldoInicial;
 double PrecioInicial=0;
 double GridsA[];
 double GridsB[];
+string ObjetosCerados[];
 int GridArrayPrint =0;
 double GridBloqueado =0;
 double GridBloqueadoD =0;
@@ -53,6 +54,7 @@ double PrecioInicialD =0;
 int GridPosA =0;
 int GridPosB =0;
 int GridActual =GridPosA+GridPosB;
+int Contador=0;
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -89,34 +91,11 @@ void OnTick()
 
    if(GridArrayPrint ==0)
      {
-      //Arrays Grids
-      ArrayResize(GridsA,(Grids/2)+1);
-      ArrayResize(GridsB,(Grids/2)+1);
-      //rellenar array alciasta
-      double AccA= PrecioInicial;
-      for(int i=ArraySize(GridsA)-1; i>0; i--)
-        {
-         GridsA[i]=PrecioInicial+(TGrids*(i*Point));
-        }
-      //rellenar array bajista
-      double AccB= PrecioInicial;
-      for(int i=ArraySize(GridsB)-1; i>0; i--)
-        {
-         GridsB[i]=PrecioInicial-(TGrids*(i*Point));
-        }
-      //dibujar Grids alciastas
-      for(int i= ArraySize(GridsA)-1; i>0; i--)
-        {
-         ObjCreateLine(GridsA[i],"line"+i+"A",clrRed);
-
-        }
-      //dibujar Grids alciastas
-      for(int i= ArraySize(GridsB)-1; i>0; i--)
-        {
-         ObjCreateLine(GridsB[i],"line"+i+"B",clrGreen);
-
-        }
+     ObjCreateGrids(PrecioInicial,Grids,TGrids,GridsA,GridsB,ObjetosCerados);
+     
+   
       GridArrayPrint=1;
+      Contador++;
 
      }
 
@@ -156,6 +135,7 @@ void OnTick()
            "Grid Actual ",GridActual,ENTER,
            "GridA ",GridPosA,ENTER,
            "GridB ",GridPosB,ENTER,
+           "Contador ",Contador,ENTER,
 
            OrdenesAbiertas(),
            OrdenesCerradas());

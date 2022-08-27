@@ -52,6 +52,17 @@ string PrintArray(double &Array[])
 
    return salida;
   }
+string PrintArray(string &Array[])
+  {
+   string salida ="[";
+   for(int i=ArraySize(Array)-1; i>=0; i--)
+     {
+      salida += Array[i]+",";
+     }
+   salida+="]";
+
+   return salida;
+  }
 double SumaArray(double &Array[]){
    double acc=0;
    
