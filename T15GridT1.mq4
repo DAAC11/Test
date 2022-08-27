@@ -132,6 +132,7 @@ void OnTick()
            "Precio inial: ",PrecioInicial,ENTER,
            "Array A: ",PrintArray(GridsA),ENTER,
            "Array B: ",PrintArray(GridsB),ENTER,
+           "Objetos: ",PrintArray(ObjetosCerados),ENTER,
            "Grid Actual ",GridActual,ENTER,
            "GridA ",GridPosA,ENTER,
            "GridB ",GridPosB,ENTER,
