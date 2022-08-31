@@ -19,7 +19,7 @@ input double Lotes = 0.01;
 input int TGR = 400;
 input int STP = 200;
 input int Grids = 10; // Numero de Grids
-input int TGrids = 100;//Distancia entre Grids
+input int TGrids = 200;//Distancia entre Grids
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -41,9 +41,15 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 bool Flag = true;
 int SaldoInicial;
+//+------------------------------------------------------------------+
 double PrecioInicial = 0;
 double GridsA[];
 double GridsB[];
+double GridLevels[];
+double NxGridUP = 0;
+double NxGridDOWN = 0;
+//+------------------------------------------------------------------+
+bool NextGridEntrance = true;
 string ObjetosCerados[];
 int GridArrayPrint = 0;
 double GridBloqueado = 0;
@@ -85,11 +91,21 @@ void OnTick()
          GridBloqueado = PrecioInicial;
         }
      }
-//Control de Grids
+//Dibujar Grid
    if(GridArrayPrint == 0)
      {
       ObjCreateGrids(PrecioInicial, Grids, TGrids, GridsA, GridsB, ObjetosCerados);
       GridArrayPrint = 1;
+     }
+//Alimantar Array de niveles
+   if(GridArrayPrint == 1)
+     {
+      ArrayResize(GridLevels, ArraySize(GridsA) + ArraySize(GridsB) - 1);
+      ArrayCopy(GridLevels, GridsA, 0, 0, WHOLE_ARRAY);
+      ArrayCopy(GridLevels, GridsB, ArraySize(GridsA), 0, WHOLE_ARRAY);
+      GridLevels[0] = PrecioInicial;
+      ArraySort(GridLevels, WHOLE_ARRAY, 0, MODE_ASCEND);
+      GridArrayPrint = 2;
      }
 //Maximos y minimos
    if(Max == 0)
@@ -111,14 +127,42 @@ void OnTick()
            }
         }
      }
-//Entradas
-   if(Ordenes % OrdersTotal() != 0)
+//Grids Proximos para entradas
+   int index ;
+   if(GridArrayPrint == 2)
      {
-      Buy_LMT(Lotes, LastOPOpenPrice() + (TGrids * Point * 10), Min);
-      Sell_LMT(Lotes, LastOPOpenPrice() - (TGrids * Point * 10), Max);
-      Ordenes = OrdersTotal();
-      Ordenes++;
-      Sleep(2000);
+      if(PrecioInicial == LastOPOpenPrice())
+        {
+         index = ArrayBsearch(GridLevels, PrecioInicial, WHOLE_ARRAY, 0, MODE_ASCEND);
+         NxGridUP = GridLevels[index + 1];
+         NxGridDOWN = GridLevels[index - 1];
+        }
+      else
+         if(PrecioInicial != LastOPOpenPrice() && NextGridEntrance)
+           {
+            index = ArrayBsearch(GridLevels, LastOPOpenComment(), WHOLE_ARRAY, 0, MODE_ASCEND);
+            NxGridUP = GridLevels[index + 1];
+            NxGridDOWN = GridLevels[index - 1];
+           }
+     }
+//Siguentes entradas
+   if(NextGridEntrance)
+     {
+      if(MathAbs(Ask - NxGridUP) < 20 * Point)
+        {
+         Buy_LMT(Lotes, NxGridUP, NxGridUP + (TGrids * Point), Min, NxGridUP);
+         Sell_STP(Lotes, NxGridUP, NxGridUP - (TGrids * Point), Max, NxGridUP);
+         NextGridEntrance == false;
+         Sleep(1000);
+        }
+      Sleep(1000);
+     }
+   if(MathAbs(Ask - NxGridDOWN) < 20 * Point && NextGridEntrance)
+     {
+      Buy_STP(Lotes, NxGridDOWN, NxGridDOWN + (TGrids * Point), Min, NxGridDOWN);
+      Sell_LMT(Lotes, NxGridDOWN, NxGridDOWN - (TGrids * Point), Max, NxGridDOWN);
+      NextGridEntrance == false;
+      Sleep(1000);
      }
 //Dibujar Grid Bloqueado
    if(GridBloqueado != 0)
@@ -145,8 +189,11 @@ void OnTick()
            "Balance: ", AccountBalance(), ENTER,
            "Flotante: ", Flotante(), ENTER,
            "Precio inial: ", PrecioInicial, ENTER,
+           "Siguente nivel Superior: ", NxGridUP, ENTER,
+           "Siguente nivel inferior: ", NxGridDOWN, ENTER,
            "Array A: ", PrintArray(GridsA), ENTER,
            "Array B: ", PrintArray(GridsB), ENTER,
+           "Grids levels: ", PrintArray(GridLevels), ENTER,
            "Objetos: ", PrintArray(ObjetosCerados), ENTER,
            "Grid Actual ", GridActual, ENTER,
            "GridA ", GridPosA, ENTER,

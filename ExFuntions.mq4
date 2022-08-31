@@ -20,59 +20,72 @@
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void AddArray(int &Array[],int Value)
+void AddArray(int &Array[], int Value)
   {
    int Size = ArraySize(Array);
-   ArrayResize(Array,Size+1);
-   Array[ArraySize(Array)-1]=Value;
-
+   ArrayResize(Array, Size + 1);
+   Array[ArraySize(Array) - 1] = Value;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void AddArray(double &Array[], double Value)
+  {
+   int Size = ArraySize(Array);
+   ArrayResize(Array, Size + 1);
+   Array[ArraySize(Array) - 1] = Value;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 string PrintArray(int &Array[])
   {
-   string salida ="[";
-   for(int i=ArraySize(Array)-1; i>=0; i--)
+   string salida = "[";
+   for(int i = 0 ; i <= ArraySize(Array) - 1; i++)
      {
-      salida += Array[i]+",";
+      salida += Array[i] + ",";
      }
-   salida+="]";
-
+   salida += "]";
    return salida;
   }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 string PrintArray(double &Array[])
   {
-   string salida ="[";
-   for(int i=ArraySize(Array)-1; i>=0; i--)
+   string salida = "[";
+   for(int i = 0 ; i <= ArraySize(Array) - 1; i++)
      {
-      salida += Array[i]+",";
+      salida += Array[i] + ",";
      }
-   salida+="]";
-
+   salida += "]";
    return salida;
   }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 string PrintArray(string &Array[])
   {
-   string salida ="[";
-   for(int i=ArraySize(Array)-1; i>=0; i--)
+   string salida = "[";
+   for(int i = 0 ; i <= ArraySize(Array) - 1; i++)
      {
-      salida += Array[i]+",";
+      salida += Array[i] + ",";
      }
-   salida+="]";
-
+   salida += "]";
    return salida;
   }
-double SumaArray(double &Array[]){
-   double acc=0;
-   
-   for(int i=ArraySize(Array)-1;i>0;i--)
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+double SumaArray(double &Array[])
+  {
+   double acc = 0;
+   for(int i = ArraySize(Array) - 1; i > 0; i--)
      {
-      acc+=Array[i];
+      acc += Array[i];
      }
-  return acc;
-
-}
+   return acc;
+  }
 //+------------------------------------------------------------------+
 /*string OpenOrders(){
 
@@ -86,16 +99,15 @@ double SumaArray(double &Array[]){
 }*/
 string OpenOrders() //Funcionando
   {
-   string Abiertas="[";
-
-   for(int i=OrdersTotal()-1; i>=0; i--)
+   string Abiertas = "[";
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         Abiertas += OrderTicket()+",";
+         Abiertas += OrderTicket() + ",";
         }
      }
-   Abiertas+="]";
+   Abiertas += "]";
    return Abiertas;
-
   }
+//+------------------------------------------------------------------+

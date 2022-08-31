@@ -18,8 +18,8 @@
 //+------------------------------------------------------------------+
 double Flotante() //Funcionando
   {
-   double Flotante =AccountEquity()-AccountBalance();
-   return NormalizeDouble(Flotante,2);
+   double Flotante = AccountEquity() - AccountBalance();
+   return NormalizeDouble(Flotante, 2);
   }
 
 //+------------------------------------------------------------------+
@@ -27,20 +27,19 @@ double Flotante() //Funcionando
 //+------------------------------------------------------------------+
 string LastOPType(int OPType)//Funcionando
   {
-   string StrType="";
-   if(OPType ==0)
-      StrType="OP_BUY";
-   if(OPType ==1)
-      StrType="OP_SELL";
-   if(OPType ==2)
-      StrType="OP_BUYLIMIT";
-   if(OPType ==3)
-      StrType="OP_SELLLIMIT";
-   if(OPType ==4)
-      StrType="OP_BUYSTOP";
-   if(OPType ==5)
-      StrType="OP_SELLSTOP";
-
+   string StrType = "";
+   if(OPType == 0)
+      StrType = "OP_BUY";
+   if(OPType == 1)
+      StrType = "OP_SELL";
+   if(OPType == 2)
+      StrType = "OP_BUYLIMIT";
+   if(OPType == 3)
+      StrType = "OP_SELLLIMIT";
+   if(OPType == 4)
+      StrType = "OP_BUYSTOP";
+   if(OPType == 5)
+      StrType = "OP_SELLSTOP";
    return StrType;
   }
 
@@ -50,10 +49,10 @@ string LastOPType(int OPType)//Funcionando
 //+------------------------------------------------------------------+
 int LastTicketOpen() //Funcionando
   {
-   int last=0;
-   if(OrderSelect(OrdersTotal()-1,SELECT_BY_POS,MODE_TRADES))
+   int last = 0;
+   if(OrderSelect(OrdersTotal() - 1, SELECT_BY_POS, MODE_TRADES))
      {
-      last=OrderTicket();
+      last = OrderTicket();
      }
    return last;
   }
@@ -63,13 +62,11 @@ int LastTicketOpen() //Funcionando
 //+------------------------------------------------------------------+
 int LastTicketClose() //Funcionando
   {
-   int last =0;
-
-   if(OrderSelect(OrdersHistoryTotal()-1,SELECT_BY_POS,MODE_HISTORY))
+   int last = 0;
+   if(OrderSelect(OrdersHistoryTotal() - 1, SELECT_BY_POS, MODE_HISTORY))
      {
-      last=OrderTicket();
+      last = OrderTicket();
      }
-
    return last;
   }
 
@@ -78,25 +75,22 @@ int LastTicketClose() //Funcionando
 //+------------------------------------------------------------------+
 string LastTypeOpen() //Funcionando
   {
-   string lastOrderType ="";
-   int numType=-1;
-   OrderSelect(LastTicketOpen(),SELECT_BY_TICKET,MODE_TRADES);
-   numType=OrderType();
-
-
-   if(numType ==0)
-      lastOrderType="OP_BUY";
-   if(numType ==1)
-      lastOrderType="OP_SELL";
-   if(numType ==2)
-      lastOrderType="OP_BUYLIMIT";
-   if(numType ==3)
-      lastOrderType="OP_SELLLIMIT";
-   if(numType ==4)
-      lastOrderType="OP_BUYSTOP";
-   if(numType ==5)
-      lastOrderType="OP_SELLSTOP";
-
+   string lastOrderType = "";
+   int numType = -1;
+   OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES);
+   numType = OrderType();
+   if(numType == 0)
+      lastOrderType = "OP_BUY";
+   if(numType == 1)
+      lastOrderType = "OP_SELL";
+   if(numType == 2)
+      lastOrderType = "OP_BUYLIMIT";
+   if(numType == 3)
+      lastOrderType = "OP_SELLLIMIT";
+   if(numType == 4)
+      lastOrderType = "OP_BUYSTOP";
+   if(numType == 5)
+      lastOrderType = "OP_SELLSTOP";
    return lastOrderType;
   }
 
@@ -105,25 +99,22 @@ string LastTypeOpen() //Funcionando
 //+------------------------------------------------------------------+
 string LastTypeClose() //Funcionando
   {
-   string lastOrderType ="";
-   int numType=-1;
-   OrderSelect(LastTicketClose(),SELECT_BY_TICKET,MODE_HISTORY);
-   numType=OrderType();
-
-
-   if(numType ==0)
-      lastOrderType="OP_BUY";
-   if(numType ==1)
-      lastOrderType="OP_SELL";
-   if(numType ==2)
-      lastOrderType="OP_BUYLIMIT";
-   if(numType ==3)
-      lastOrderType="OP_SELLLIMIT";
-   if(numType ==4)
-      lastOrderType="OP_BUYSTOP";
-   if(numType ==5)
-      lastOrderType="OP_SELLSTOP";
-
+   string lastOrderType = "";
+   int numType = -1;
+   OrderSelect(LastTicketClose(), SELECT_BY_TICKET, MODE_HISTORY);
+   numType = OrderType();
+   if(numType == 0)
+      lastOrderType = "OP_BUY";
+   if(numType == 1)
+      lastOrderType = "OP_SELL";
+   if(numType == 2)
+      lastOrderType = "OP_BUYLIMIT";
+   if(numType == 3)
+      lastOrderType = "OP_SELLLIMIT";
+   if(numType == 4)
+      lastOrderType = "OP_BUYSTOP";
+   if(numType == 5)
+      lastOrderType = "OP_SELLSTOP";
    return lastOrderType;
   }
 
@@ -134,18 +125,16 @@ string LastTypeClose() //Funcionando
 //+------------------------------------------------------------------+
 string OrdenesAbiertas() //Funcionando
   {
-   string Abiertas="\n=====ORDENES ABIERTAS=====\n";
-
-   for(int i=OrdersTotal()-1; i>=0; i--)
+   string Abiertas = "\n=====ORDENES ABIERTAS=====\n";
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         Abiertas += "||Ticket: "+OrderTicket()+
-                     "||Profit = "+" $ "+NormalizeDouble(OrderProfit(),2)+" || "+LastOPType(OrderType())+"\n";
+         Abiertas += "||Ticket: " + OrderTicket() +
+                     "||Profit = " + " $ " + NormalizeDouble(OrderProfit(), 2) + " || " + LastOPType(OrderType()) + "\n";
         }
      }
    return Abiertas;
-
   }
 
 //+------------------------------------------------------------------+
@@ -153,32 +142,28 @@ string OrdenesAbiertas() //Funcionando
 //+------------------------------------------------------------------+
 string OrdenesCerradas() //Funcionando
   {
-   string Cerradas="\n=====ULTIMAS 10 ORDENES CERRADAS=====\n";
-
-   for(int i=OrdersHistoryTotal()-1; i>=OrdersHistoryTotal()-10; i--)
+   string Cerradas = "\n=====ULTIMAS 10 ORDENES CERRADAS=====\n";
+   for(int i = OrdersHistoryTotal() - 1; i >= OrdersHistoryTotal() - 10; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_HISTORY))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_HISTORY))
         {
-         Cerradas += "||Ticket: "+OrderTicket()+"||Profit = "+"$ "+
-                     NormalizeDouble(OrderProfit(),2)+
-                     "||Type: "+LastOPType(OrderType())+"\n";
+         Cerradas += "||Ticket: " + OrderTicket() + "||Profit = " + "$ " +
+                     NormalizeDouble(OrderProfit(), 2) +
+                     "||Type: " + LastOPType(OrderType()) + "\n";
         }
      }
    return Cerradas;
-
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 double LastOPProfitClose()//Funcionando
   {
-
-   double Last=0;
-   if(OrderSelect(LastTicketClose(),SELECT_BY_TICKET,MODE_HISTORY))
+   double Last = 0;
+   if(OrderSelect(LastTicketClose(), SELECT_BY_TICKET, MODE_HISTORY))
      {
       Last = OrderProfit();
      }
-
    return Last;
   }
 //+------------------------------------------------------------------+
@@ -186,13 +171,11 @@ double LastOPProfitClose()//Funcionando
 //+------------------------------------------------------------------+
 double LastOPProfitOpen()//Funcionando
   {
-
-   double Last=0;
-   if(OrderSelect(LastTicketOpen(),SELECT_BY_TICKET,MODE_TRADES))
+   double Last = 0;
+   if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
      {
       Last = OrderProfit();
      }
-
    return Last;
   }
 
@@ -202,12 +185,12 @@ double LastOPProfitOpen()//Funcionando
 //+------------------------------------------------------------------+
 int OpenBuys()
   {
-   int nBuys =0;
-   for(int i=OrdersTotal()-1; i>0; i--)
+   int nBuys = 0;
+   for(int i = OrdersTotal() - 1; i > 0; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         if(OrderType()==OP_BUY)
+         if(OrderType() == OP_BUY)
            {
             nBuys++;
            }
@@ -221,12 +204,12 @@ int OpenBuys()
 //+------------------------------------------------------------------+
 int OpenSells()
   {
-   int nSells =0;
-   for(int i=OrdersTotal()-1; i>0; i--)
+   int nSells = 0;
+   for(int i = OrdersTotal() - 1; i > 0; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         if(OrderType()==OP_SELL)
+         if(OrderType() == OP_SELL)
            {
             nSells++;
            }
@@ -240,15 +223,26 @@ int OpenSells()
 //+------------------------------------------------------------------+
 double LastOPOpenPrice()//Funcionando
   {
-
-   double Last=0;
-   if(OrderSelect(LastTicketOpen(),SELECT_BY_TICKET,MODE_TRADES))
+   double Last = 0;
+   if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
      {
       Last = OrderOpenPrice();
      }
-
    return Last;
   }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+string LastOPOpenComment()//Funcionando
+  {
+   string Last = "";
+   if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
+     {
+      Last = OrderComment();
+     }
+   return Last;
+  }
+
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -261,7 +255,7 @@ double LastOPOpenPrice()//Funcionando
      {
       if(OrderSelect(i,SELECT_BY_POS,MODE))
         {
-         
+
         }
      }
 
