@@ -22,12 +22,39 @@ void ObjCreateLine(double precio, string name, color clr)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-bool ObjCreateGrids(double PrecioInicial, int Grids, int Puntos, double &GridAlcista[], double &GridBajista[], string &ObjetosCerados[])
+bool ObjCreateGrids(double GridCentral,double &GridLevels[], string &ObjetosCerados[])
+  {
+   ArrayResize(ObjetosCerados, ArraySize(GridLevels));
+
+   for(int i = 0; i <= ArraySize(GridLevels)-1 ; i++)
+     {
+      if(GridLevels[i] == GridCentral)
+        {
+         ObjCreateLine(GridLevels[i], "Line " + i, clrAqua);
+         ObjetosCerados[i] = "Line " + (i + 1);
+        }
+      if(GridLevels[i] > GridCentral)
+        {
+         ObjCreateLine(GridLevels[i], "Line " + i, clrGreen);
+         ObjetosCerados[i] = "Line " + (i + 1);
+        }
+      if(GridLevels[i] < GridCentral)
+        {
+         ObjCreateLine(GridLevels[i], "Line " + i, clrRed);
+         ObjetosCerados[i] = "Line " + (i + 1);
+        }
+     }
+   return true;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+/*bool ObjCreateGrids(double PrecioInicial, int Grids, int Puntos, double &GridAlcista[], double &GridBajista[], string &ObjetosCerados[])
   {
 //Arrays Grids
-   ArrayResize(GridAlcista, (Grids / 2)+1 );
-   ArrayResize(GridBajista, (Grids / 2) );
-   ArrayResize(ObjetosCerados, Grids+1 );
+   ArrayResize(GridAlcista, (Grids / 2) + 1);
+   ArrayResize(GridBajista, (Grids / 2));
+   ArrayResize(ObjetosCerados, Grids + 1);
    int ObjetsI = 0;
 //rellenar array alciasta
    double AccA = PrecioInicial;
@@ -56,7 +83,8 @@ bool ObjCreateGrids(double PrecioInicial, int Grids, int Puntos, double &GridAlc
       ObjetsI++;
      }
    return True;
-  }
+  }*/
+
 
 
 
