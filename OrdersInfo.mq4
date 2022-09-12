@@ -238,7 +238,10 @@ string LastOPOpenComment()//Funcionando
    string Last = "";
    if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
      {
-      Last = OrderComment();
+      if(OrderCloseTime() != 0)
+        {
+         Last = OrderComment();
+        }
      }
    return Last;
   }

@@ -31,17 +31,17 @@ bool ObjCreateGrids(double GridCentral,double &GridLevels[], string &ObjetosCera
       if(GridLevels[i] == GridCentral)
         {
          ObjCreateLine(GridLevels[i], "Line " + i, clrAqua);
-         ObjetosCerados[i] = "Line " + (i + 1);
+         ObjetosCerados[i] = "Line " + (i );
         }
       if(GridLevels[i] > GridCentral)
         {
          ObjCreateLine(GridLevels[i], "Line " + i, clrGreen);
-         ObjetosCerados[i] = "Line " + (i + 1);
+         ObjetosCerados[i] = "Line " + (i );
         }
       if(GridLevels[i] < GridCentral)
         {
          ObjCreateLine(GridLevels[i], "Line " + i, clrRed);
-         ObjetosCerados[i] = "Line " + (i + 1);
+         ObjetosCerados[i] = "Line " + (i );
         }
      }
    return true;

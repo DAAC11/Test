@@ -12,7 +12,7 @@
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Buy(double Lots, double Target, double Stop) //Funcionando
+int Buy(double Lots, double Target, double Stop)   //Funcionando
   {
    int O = OrderSend(NULL, OP_BUY, Lots, Ask, 3, Ask - (Stop * Point), Ask + (Target * Point), NULL, 3, 0, clrGreen);
    return O;
@@ -20,7 +20,15 @@ int Buy(double Lots, double Target, double Stop) //Funcionando
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Sell_STP(double Lots, double OpenPrice, double Target, double Stop,  string Comentario) //Funcionando
+int BuyAtPrice(double Lots,  double Target, double Stop,  string Comentario)   //Funcionando
+  {
+   int O = OrderSend(NULL, OP_BUY, Lots, Ask, 3, Stop, Target, Comentario, 3, 0, clrGreen);
+   return O;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int Sell_STP(double Lots, double OpenPrice, double Target, double Stop,  string Comentario)   //Funcionando
   {
    int V = OrderSend(NULL, OP_SELLSTOP, Lots, OpenPrice, 3, Stop, Target, Comentario, 3, 0, clrRed);
    return V;
@@ -29,7 +37,7 @@ int Sell_STP(double Lots, double OpenPrice, double Target, double Stop,  string 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Buy_STP(double Lots, double OpenPrice, double Target, double Stop,  string Comentario) //Funcionando
+int Buy_STP(double Lots, double OpenPrice, double Target, double Stop,  string Comentario)   //Funcionando
   {
    int O = OrderSend(NULL, OP_BUYSTOP, Lots, OpenPrice, 3, Stop, Target, Comentario, 3, 0, clrGreen);
    return O;
@@ -37,7 +45,7 @@ int Buy_STP(double Lots, double OpenPrice, double Target, double Stop,  string C
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Sell_LMT(double Lots, double OpenPrice, double Target, double Stop, string Comentario) //Funcionando
+int Sell_LMT(double Lots, double OpenPrice, double Target, double Stop, string Comentario)   //Funcionando
   {
    int V = OrderSend(NULL, OP_SELLLIMIT, Lots, OpenPrice, 3, Stop, Target, Comentario, 3, 0, clrRed);
    return V;
@@ -46,7 +54,7 @@ int Sell_LMT(double Lots, double OpenPrice, double Target, double Stop, string C
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Buy_LMT(double Lots, double OpenPrice, double Target, double Stop, string Comentario) //Funcionando
+int Buy_LMT(double Lots, double OpenPrice, double Target, double Stop, string Comentario)   //Funcionando
   {
    int O = OrderSend(NULL, OP_BUYLIMIT, Lots, OpenPrice, 3, Stop, Target, Comentario, 3, 0, clrGreen);
    return O;
@@ -54,9 +62,17 @@ int Buy_LMT(double Lots, double OpenPrice, double Target, double Stop, string Co
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int Sell(double Lots, double Target, double Stop) //Funcionando
+int Sell(double Lots, double Target, double Stop)   //Funcionando
   {
    int V = OrderSend(NULL, OP_SELL, Lots, Bid, 3, Bid + (Stop * Point), Bid - (Target * Point), NULL, 3, 0, clrRed);
+   return V;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int SellAtPrice(double Lots,  double Target, double Stop, string Comentario)   //Funcionando
+  {
+   int V = OrderSend(NULL, OP_SELL, Lots, Bid, 3, Stop, Target, Comentario, 3, 0, clrRed);
    return V;
   }
 
@@ -101,10 +117,6 @@ void BE(int Ticket, double puntos)
         }*/
      }
   }
-
-//+------------------------------------------------------------------+
-//|                                                                  |
-//+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -178,4 +190,16 @@ void LiquidadorSell()
         }
      }
   }
+void LiquidadorPendientes(){
+   for(int i=OrdersTotal()-1;i>=0;i--)
+     {
+      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+        {
+         if(OrderOpenTime()==0)
+           {
+            OrderDelete(OrderTicket(),clrOrange);
+           }
+        }
+     }
+}
 //+------------------------------------------------------------------+
