@@ -14,9 +14,10 @@
 //+------------------------------------------------------------------+
 int Buy(double Lots, double Target, double Stop)   //Funcionando
   {
-   int O = OrderSend(NULL, OP_BUY, Lots, Ask, 3, Ask - (Stop * Point), Ask + (Target * Point), NULL, 3, 0, clrGreen);
+   int O = OrderSend(NULL, OP_BUY, Lots, Ask, 3, Ask - (Stop * Point), Ask + (Target * Point), Ask, 3, 0, clrGreen);
    return O;
   }
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -64,7 +65,7 @@ int Buy_LMT(double Lots, double OpenPrice, double Target, double Stop, string Co
 //+------------------------------------------------------------------+
 int Sell(double Lots, double Target, double Stop)   //Funcionando
   {
-   int V = OrderSend(NULL, OP_SELL, Lots, Bid, 3, Bid + (Stop * Point), Bid - (Target * Point), NULL, 3, 0, clrRed);
+   int V = OrderSend(NULL, OP_SELL, Lots, Bid, 3, Bid + (Stop * Point), Bid - (Target * Point), Bid, 3, 0, clrRed);
    return V;
   }
 //+------------------------------------------------------------------+
@@ -195,7 +196,8 @@ void LiquidadorPendientes(){
      {
       if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
         {
-         if(OrderOpenTime()==0)
+         if(OrderType()==OP_BUYLIMIT||OrderType()==OP_BUYSTOP||
+         OrderType()==OP_SELLLIMIT||OrderType()==OP_SELLSTOP)
            {
             OrderDelete(OrderTicket(),clrOrange);
            }

@@ -226,9 +226,24 @@ double LastOPOpenPrice()//Funcionando
    double Last = 0;
    if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
      {
-      Last = OrderOpenPrice();
+      Last = NormalizeDouble(OrderOpenPrice(), Digits);
      }
    return Last;
+  }
+double LastOPOpenPriceBS()//Funcionando
+  {
+   double Last = 0;
+   for(int i=OrdersTotal()-1;i>=0;i--)
+     {
+      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+        {
+         if(OrderType()==OP_BUY||OrderType()==OP_SELL)
+           {
+            return Last = OrderOpenPrice();
+           }
+        }
+     }
+     return Last;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |

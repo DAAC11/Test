@@ -54,7 +54,10 @@ double GridCentral = 0;
 double PriceAVG = 0;
 int GridLevel = -1;
 int GridLevelVar = -1;
-bool OpenNewGrids = false;
+int Ciclos = 0;
+bool OpenNewGridsBuy = false;
+bool OpenNewGridsSell = false;
+int Test = 0;
 
 
 double GridMax = 0;
@@ -76,7 +79,9 @@ void OnTick()
      {
       Buy(Lotes, Puntos, Puntos * Grids);
       Sell(Lotes, Puntos, Puntos * Grids);
-      OpenNewGrids = true;
+      Ciclos ++;
+      OpenNewGridsBuy = true;
+      OpenNewGridsSell = true;
      }
 //Entrada inicial y Grid Central
    if(FGridCentral)
@@ -92,9 +97,9 @@ void OnTick()
       DrawGrids = false;
      }
 //Pintar Grid Bloqueado
+   PrecioBloqueado = LastOPOpenPrice();
    if(PBloqueadoInicial)
      {
-      PrecioBloqueado = LastOPOpenPrice();
       PBloqueadoInicial = false;
       ObjCreateLine(PrecioBloqueado, "GridBloqueado", clrDarkOrange);
      }
@@ -105,25 +110,31 @@ void OnTick()
       GridMin = GridLevels[ArrayMinimum(GridLevels)];
      }
 //Abrir nuevas OPs
-   if(OpenNewGrids)
+   if(OpenNewGridsBuy)
      {
       int index = ArrayBsearch(GridLevels, PrecioBloqueado);
-      ///Superior
       Buy_STP(Lotes, GridLevels[index + 1], GridLevels[index + 2], GridMin, GridLevels[index + 1]);
-      Sell_STP(Lotes, GridLevels[index], GridLevels[index - 1], GridMax, GridLevels[index + 1]);
-      ///Inferior
       Buy_LMT(Lotes, GridLevels[index - 1], GridLevels[index], GridMin, GridLevels[index - 1]);
-      Sell_STP(Lotes, GridLevels[index - 1], GridLevels[index - 2], GridMax, GridLevels[index - 1]);
-      OpenNewGrids = false;
+      OpenNewGridsBuy = false;
      }
-//Cambiar Precio Bloqueado y cerrar Open espera
-   if(StrToDouble(LastOPOpenComment())!=PrecioBloqueado)
+   if(OpenNewGridsSell)
+     {
+      int index = ArrayBsearch(GridLevels, PrecioBloqueado);
+      Sell_LMT(Lotes, GridLevels[index + 1], GridLevels[index ], GridMax, GridLevels[index ]);
+      Sell_STP(Lotes, GridLevels[index - 1], GridLevels[index - 2], GridMax, GridLevels[index - 1]);
+      OpenNewGridsSell = false;
+     }
+//Cambiar nuevo precio bloqueado
+    if(LastOPOpenPriceBS()!= PrecioBloqueado)
+     {
+      PrecioBloqueado= LastOPOpenPriceBS();
+      ObjCreateLine(PrecioBloqueado, "GridBloqueado", clrDarkOrange);
+     }
+   /*if(PrecioBloqueado!=StrToDouble(LastOPOpenComment()))
      {
       LiquidadorPendientes();
-      PrecioBloqueado=LastOPOpenComment();
-      PBloqueadoInicial=true;
-      OpenNewGrids = false;
-     }
+      PrecioBloqueado=StrToDouble(LastOPOpenComment());
+     }*/
 //Informacion en pantalla
    Comment("Ordenes Abiertas: ", OrdersTotal(), ENTER,
            "Ultima Ordern: ", LastTypeClose(), ENTER,
@@ -137,6 +148,8 @@ void OnTick()
            "Objetos: ", PrintArray(Objetos), ENTER,
            "Pos: ", GridLevel, ENTER,
            "Grid Bloqueado: ", PrecioBloqueado, ENTER,
+           "Last Op Price: ", LastOPOpenPrice(), ENTER,
+           "Comprobacion: ", Test, ENTER,
            /* "Max ", Max, ENTER,
             "Min ", Min, ENTER,*/
            OrdenesAbiertas(),
