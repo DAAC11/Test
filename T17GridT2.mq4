@@ -174,3 +174,16 @@ void OnTick()
            OrdenesCerradasSinPendientes());
   }
 //+------------------------------------------------------------------+
+/*Conclusion:
+
+  en cada entrada se toma una compra y una venta,  y se cierra en 
+  positivo al siguiente grid pero siempre carga las perdidas y 
+  practicamente todo lo que gana lo carga en foltante mas el spread 
+*/
+  
+/*Siguientes Pasos:
+  
+  Hacer un grid que solo pueda comprar y vender un nivel  una vez, y 
+  solo se pueda volver a comprarlo cuando las poeraciones abiertas desde
+  ese grid ya esten cerradas
+*/
