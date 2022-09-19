@@ -46,6 +46,7 @@ void OnDeinit(const int reason)
 double SaldoInicial = 0;
 bool Flag = true; //Bandera del saldo inicial
 bool PBloqueadoInicial = true;
+bool CancelInicial = true;
 bool FGridCentral = true; //Bandera Grid Central
 bool DrawGrids = true;
 string Objetos[];
@@ -58,7 +59,7 @@ int Ciclos = 0;
 bool OpenNewGridsBuy = false;
 bool OpenNewGridsSell = false;
 int Test = 0;
-
+int OrdenesSinEjecutar = 0;
 
 double GridMax = 0;
 double GridMin = 0;
@@ -68,6 +69,8 @@ double PrecioBloqueado = -1;
 //+------------------------------------------------------------------+
 void OnTick()
   {
+//Alimentador de variable de consulta
+   OrdenesSinEjecutar = ContadorDePendientes();
 //Balance inicial
    if(Flag)
      {
@@ -83,6 +86,11 @@ void OnTick()
       OpenNewGridsBuy = true;
       OpenNewGridsSell = true;
      }
+   /*if(OrdersTotal()==0&&GridMax!=0)
+     {
+      BuyAtPrice(Lotes, Puntos, Puntos * Grids);
+      SellAtPrice(Lotes, Puntos, Puntos * Grids);
+     }*/
 //Entrada inicial y Grid Central
    if(FGridCentral)
      {
@@ -125,16 +133,25 @@ void OnTick()
       OpenNewGridsSell = false;
      }
 //Cambiar nuevo precio bloqueado
-    if(LastOPOpenPriceBS()!= PrecioBloqueado)
+   if(LastOPOpenPriceBS() != PrecioBloqueado && CancelInicial)
      {
-      PrecioBloqueado= LastOPOpenPriceBS();
+      PrecioBloqueado = LastOPOpenPriceBS();
       ObjCreateLine(PrecioBloqueado, "GridBloqueado", clrDarkOrange);
+      CancelInicial = false;
      }
-   /*if(PrecioBloqueado!=StrToDouble(LastOPOpenComment()))
+   if(LastOPOpenPriceBS() != PrecioBloqueado)
+     {
+      PrecioBloqueado = LastOPOpenPriceBS();
+      ObjCreateLine(PrecioBloqueado, "GridBloqueado", clrDarkOrange);
+      CancelInicial = false;
+     }
+//Cancelar Ordenes Pendientes
+   if(OrdenesSinEjecutar ==3||OrdenesSinEjecutar ==2)
      {
       LiquidadorPendientes();
-      PrecioBloqueado=StrToDouble(LastOPOpenComment());
-     }*/
+      OpenNewGridsBuy = true;
+      OpenNewGridsSell = true;
+     }
 //Informacion en pantalla
    Comment("Ordenes Abiertas: ", OrdersTotal(), ENTER,
            "Ultima Ordern: ", LastTypeClose(), ENTER,
@@ -150,9 +167,10 @@ void OnTick()
            "Grid Bloqueado: ", PrecioBloqueado, ENTER,
            "Last Op Price: ", LastOPOpenPrice(), ENTER,
            "Comprobacion: ", Test, ENTER,
+           "Ordernes Pendientes: ", OrdenesSinEjecutar, ENTER,
            /* "Max ", Max, ENTER,
             "Min ", Min, ENTER,*/
            OrdenesAbiertas(),
-           OrdenesCerradas());
+           OrdenesCerradasSinPendientes());
   }
 //+------------------------------------------------------------------+

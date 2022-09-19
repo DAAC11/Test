@@ -157,6 +157,26 @@ string OrdenesCerradas() //Funcionando
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
+string OrdenesCerradasSinPendientes() //Funcionando
+  {
+   string Cerradas = "\n=====ULTIMAS ORDENES CERRADAS=====\n";
+   for(int i = OrdersHistoryTotal() - 1; i >= 0; i--)
+     {
+      if(OrderSelect(i, SELECT_BY_POS, MODE_HISTORY))
+        {
+         if(OrderType() == OP_BUY || OrderType() == OP_SELL)
+           {
+            Cerradas += "||Ticket: " + OrderTicket() + "||Profit = " + "$ " +
+                        NormalizeDouble(OrderProfit(), 2) +
+                        "||Type: " + LastOPType(OrderType()) + "\n";
+           }
+        }
+     }
+   return Cerradas;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 double LastOPProfitClose()//Funcionando
   {
    double Last = 0;
@@ -230,20 +250,23 @@ double LastOPOpenPrice()//Funcionando
      }
    return Last;
   }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
 double LastOPOpenPriceBS()//Funcionando
   {
    double Last = 0;
-   for(int i=OrdersTotal()-1;i>=0;i--)
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES))
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         if(OrderType()==OP_BUY||OrderType()==OP_SELL)
+         if(OrderType() == OP_BUY || OrderType() == OP_SELL)
            {
             return Last = OrderOpenPrice();
            }
         }
      }
-     return Last;
+   return Last;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -260,7 +283,25 @@ string LastOPOpenComment()//Funcionando
      }
    return Last;
   }
-
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int ContadorDePendientes()
+  {
+   int Contador = 0;
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
+     {
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
+        {
+         if(OrderType() == OP_BUYLIMIT || OrderType() == OP_BUYSTOP ||
+            OrderType() == OP_SELLLIMIT || OrderType() == OP_SELLSTOP)
+           {
+            Contador++;
+           }
+        }
+     }
+   return Contador;
+  }
 
 //+------------------------------------------------------------------+
 //|                                                                  |
