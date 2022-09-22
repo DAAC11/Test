@@ -302,22 +302,34 @@ int ContadorDePendientes()
      }
    return Contador;
   }
-
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-/*bool OpenPiceWait(double price)//Funcionando
+double LastOPOpenLots()//Funcionando
   {
-   //Regresa true si encuentra alguna coincidencia
-   bool Last=false;
-   for(int i=OrdersTotal()-1;i>0;i--)
+   double Lots = 0;
+   if(OrderSelect(LastTicketOpen(), SELECT_BY_TICKET, MODE_TRADES))
      {
-      if(OrderSelect(i,SELECT_BY_POS,MODE))
+      Lots = NormalizeDouble(OrderLots(), Digits);
+     }
+   return Lots;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int ContadorBS()
+  {
+   int Contador = 0;
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
+     {
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-
+         if(OrderType() == OP_BUY || OrderType() == OP_SELL)
+           {
+            Contador++;
+           }
         }
      }
-
-   return Last;
-  }*/
+   return Contador;
+  }
 //+------------------------------------------------------------------+
