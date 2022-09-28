@@ -8,35 +8,66 @@
 #property link      ""
 #property version   "1.00"
 #property strict
+
 //+------------------------------------------------------------------+
-//| My function                                                      |
+//|                                                                  |
 //+------------------------------------------------------------------+
-// int MyCalculator(int value,int value2) export
-//   {
-//    return(value+value2);
-//   }
-//+------------------------------------------------------------------+
-bool OrdenContraria(int Orden, int MLots,int TGR,int STP){
+bool OrdenContraria(int Orden, int MLots, int TGR, int STP)
+  {
    bool Activo = false;
-   if(OrderSelect(Orden,SELECT_BY_TICKET))
+   if(OrderSelect(Orden, SELECT_BY_TICKET))
      {
-      if(OrderType()==OP_BUY)
+      if(OrderType() == OP_BUY)
         {
-         OrderSend(OrderSymbol(),OP_SELL,OrderLots()*MLots,Bid,5,Bid+(STP*Point)
-                   ,Bid-(TGR*Point),NULL,0,0,clrAqua);
+         OrderSend(OrderSymbol(), OP_SELL, OrderLots()*MLots, Bid, 5, Bid + (STP * Point)
+                   , Bid - (TGR * Point), NULL, 0, 0, clrAqua);
          Activo = true;
         }
-      if(OrderType()==OP_SELL)
+      if(OrderType() == OP_SELL)
         {
-         OrderSend(OrderSymbol(),OP_BUY,OrderLots()*MLots,Ask,5,
-                   Ask-(STP*Point),Ask+(TGR*Point),NULL,0,0,clrAqua);
+         OrderSend(OrderSymbol(), OP_BUY, OrderLots()*MLots, Ask, 5,
+                   Ask - (STP * Point), Ask + (TGR * Point), NULL, 0, 0, clrAqua);
          Activo = true;
         }
-      
      }
    return Activo;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int HedgeRecoveryZoneBuy(int LastTicket, double LevelBuy, int Puntos)
+  {
+   int Ticket = -1;
+   double Lotaje = -1;
+   if(OrderSelect(LastTicket, SELECT_BY_TICKET))
+     {
+      Lotaje = OrderLots();
+     }
+   Ticket = OrderSend(Symbol(), OP_BUYSTOP, Lotaje * 2, LevelBuy, 5,
+                      LevelBuy - (Puntos * Point * 1.9), LevelBuy + (Puntos * Point),
+                      NULL, 0, 0, clrAqua);
+   Alert("Hedge Buy");
+   return Ticket;
+  }
 
-}
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int HedgeRecoveryZoneSell(int LastTicket, double LevelSell, int Puntos)
+  {
+   int Ticket = -1;
+   double Lotaje = -1;
+   if(OrderSelect(LastTicket, SELECT_BY_TICKET))
+     {
+      Lotaje = OrderLots();
+     }
+   Ticket = OrderSend(Symbol(), OP_SELLSTOP, Lotaje * 2, LevelSell, 5,
+                      LevelSell + (Puntos * Point *1.9), LevelSell - (Puntos * Point),
+                      NULL, 0, 0, clrAqua);
+   Alert("Hedge Sell");
+   return Ticket;
+  }
 
 
 
+//+------------------------------------------------------------------+
