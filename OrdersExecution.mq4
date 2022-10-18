@@ -80,7 +80,7 @@ int SellAtPrice(double Lots,  double Target, double Stop, string Comentario, int
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void BE(int Ticket, double puntos)
+int BE(int Ticket, double puntos)
   {
    if(OrderSelect(Ticket, SELECT_BY_TICKET))
      {
@@ -88,41 +88,83 @@ void BE(int Ticket, double puntos)
         {
          if(OrderStopLoss() < OrderOpenPrice())
            {
-            OrderModify(OrderTicket(),
-                        OrderOpenPrice(),
-                        (OrderOpenPrice() + (puntos * Point())),
-                        OrderTakeProfit(),
-                        0,
-                        clrAquamarine);
+            return OrderModify(OrderTicket(),
+                               OrderOpenPrice(),
+                               (OrderOpenPrice() + (puntos * Point())),
+                               OrderTakeProfit(),
+                               0,
+                               clrAquamarine);
            }
         }
-      /*else
+      else
         {
-         Print(GetLastError());
-        }*/
+         Print(IntegerToString(GetLastError()) + " " + IntegerToString(OrderTicket()));
+        }
       if(OrderType() == OP_SELL)
         {
          if(OrderStopLoss() > OrderOpenPrice())
            {
-            OrderModify(OrderTicket(),
-                        OrderOpenPrice(),
-                        (OrderOpenPrice() - (puntos * Point())),
-                        OrderTakeProfit(),
-                        0,
-                        clrAquamarine);
+            return OrderModify(OrderTicket(),
+                               OrderOpenPrice(),
+                               (OrderOpenPrice() - (puntos * Point())),
+                               OrderTakeProfit(),
+                               0,
+                               clrAquamarine);
            }
         }
-      /*else
+      else
         {
-         Print(GetLastError());
-        }*/
+         Print(IntegerToString(GetLastError()) + " " + IntegerToString(OrderTicket()));
+        }
      }
+   return -1;
   }
-
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void TRSTP(int Ticket, double puntos)
+int BEPrice(int Ticket, double Price)
+  {
+   if(OrderSelect(Ticket, SELECT_BY_TICKET))
+     {
+      if(OrderType() == OP_BUY)
+        {
+         if(OrderStopLoss() < OrderOpenPrice())
+           {
+            return OrderModify(OrderTicket(),
+                               OrderOpenPrice(),
+                               Price,
+                               OrderTakeProfit(),
+                               0,
+                               clrAquamarine);
+           }
+        }
+      else
+        {
+         Print(IntegerToString(GetLastError()) + " " + IntegerToString(OrderTicket()));
+        }
+      if(OrderType() == OP_SELL)
+        {
+         if(OrderStopLoss() > OrderOpenPrice())
+           {
+            return OrderModify(OrderTicket(),
+                               OrderOpenPrice(),
+                               Price,
+                               OrderTakeProfit(),
+                               0,
+                               clrAquamarine);
+           }
+        }
+      else
+        {
+         Print(IntegerToString(GetLastError()) + " " + IntegerToString(OrderTicket()));
+        }
+     }
+   return -1;
+  }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int TRSTP(int Ticket, double puntos)
   {
    if(OrderSelect(Ticket, SELECT_BY_TICKET, MODE_TRADES))
      {
@@ -132,12 +174,12 @@ void TRSTP(int Ticket, double puntos)
            {
             if(OrderStopLoss() < Ask - (puntos * Point))
               {
-               OrderModify(
-                  OrderTicket(),
-                  OrderOpenPrice(),
-                  Ask - (puntos * Point),
-                  OrderTakeProfit(),
-                  0, Blue);
+               return OrderModify(
+                         OrderTicket(),
+                         OrderOpenPrice(),
+                         Ask - (puntos * Point),
+                         OrderTakeProfit(),
+                         0, Blue);
               }
            }
         }
@@ -150,51 +192,58 @@ void TRSTP(int Ticket, double puntos)
            {
             if(OrderStopLoss() > Bid + (puntos * Point))
               {
-               OrderModify(
-                  OrderTicket(),
-                  OrderOpenPrice(),
-                  Bid + (puntos * Point),
-                  OrderTakeProfit(),
-                  0, Blue);
+               return OrderModify(
+                         OrderTicket(),
+                         OrderOpenPrice(),
+                         Bid + (puntos * Point),
+                         OrderTakeProfit(),
+                         0, Blue);
               }
            }
         }
      }
+   return -1;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void LiquidadorBuy()
+int LiquidadorBuy()
   {
    for(int i = OrdersTotal() - 1; i > 0; i--)
      {
-      OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
-      if(OrderType() == OP_BUY)
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         OrderClose(OrderTicket(), OrderLots(), Bid, 3, clrWhite);
-         Print("Liquidador Buy");
+         if(OrderType() == OP_BUY)
+           {
+            return OrderClose(OrderTicket(), OrderLots(), Bid, 3, clrWhite);
+            Print("Liquidador Buy");
+           }
         }
      }
+   return -1;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void LiquidadorSell()
+int LiquidadorSell()
   {
    for(int i = OrdersTotal() - 1; i > 0; i--)
      {
-      OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
-      if(OrderType() == OP_SELL)
+      if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
-         OrderClose(OrderTicket(), OrderLots(), Ask, 3, clrMaroon);
-         Print("Liquidador Sell");
+         if(OrderType() == OP_SELL)
+           {
+            return OrderClose(OrderTicket(), OrderLots(), Ask, 3, clrMaroon);
+            Print("Liquidador Sell");
+           }
         }
      }
+   return -1;
   }
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void LiquidadorPendientes()
+int LiquidadorPendientes()
   {
    for(int i = OrdersTotal() - 1; i >= 0; i--)
      {
@@ -203,31 +252,33 @@ void LiquidadorPendientes()
          if(OrderType() == OP_BUYLIMIT || OrderType() == OP_BUYSTOP ||
             OrderType() == OP_SELLLIMIT || OrderType() == OP_SELLSTOP)
            {
-            OrderDelete(OrderTicket(), clrOrange);
+            return OrderDelete(OrderTicket(), clrOrange);
            }
         }
      }
+   return -1;
   }
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void Liquidador()
+int Liquidador()//Revisado
   {
-   LiquidadorPendientes();
-   for(int i = OrdersTotal() - 1; i > 0; i--)
+//LiquidadorPendientes();
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
      {
       if(OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
         {
          if(OrderType() == OP_BUY)
            {
-            OrderClose(OrderTicket(), OrderLots(), Bid, 3, clrWhite);
+            return OrderClose(OrderTicket(), OrderLots(), Bid, 5, clrWhite);
            }
          if(OrderType() == OP_SELL)
            {
-            OrderClose(OrderTicket(), OrderLots(), Ask, 3, clrWhite);
+            return OrderClose(OrderTicket(), OrderLots(), Ask, 5, clrWhite);
            }
         }
      }
+   return -1;
   }
 //+------------------------------------------------------------------+

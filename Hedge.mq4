@@ -35,7 +35,8 @@ bool OrdenContraria(int Orden, int MLots, int TGR, int STP)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int HedgeRecoveryZoneBuy(int LastTicket, double LevelBuy, int Puntos)
+int HedgeRecoveryZoneBuy(int LastTicket, double LevelBuy,  int Puntos,
+                         double MaxLots = 10, double STP = 5)
   {
    int Ticket = -1;
    double Lotaje = -1;
@@ -43,17 +44,25 @@ int HedgeRecoveryZoneBuy(int LastTicket, double LevelBuy, int Puntos)
      {
       Lotaje = OrderLots();
      }
-   Ticket = OrderSend(Symbol(), OP_BUYSTOP, Lotaje * 2, LevelBuy, 5,
-                      LevelBuy - (Puntos * Point * 1.9), LevelBuy + (Puntos * Point),
-                      NULL, 0, 0, clrAqua);
-   Alert("Hedge Buy");
+   if(Lotaje < MaxLots)
+     {
+      Ticket = OrderSend(Symbol(), OP_BUYSTOP, Lotaje * 2, LevelBuy, 5,
+                         LevelBuy - (Puntos * Point * STP), LevelBuy + (Puntos * Point),
+                         NULL, 0, 0, clrAqua);
+      Alert("Hedge Buy");
+     }
+   else
+     {
+      Alert("Exede el maximo de lotes");
+     }
    return Ticket;
   }
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int HedgeRecoveryZoneSell(int LastTicket, double LevelSell, int Puntos)
+int HedgeRecoveryZoneSell(int LastTicket, double LevelSell,
+                          int Puntos, double MaxLots = 10, double STP = 5)
   {
    int Ticket = -1;
    double Lotaje = -1;
@@ -61,13 +70,19 @@ int HedgeRecoveryZoneSell(int LastTicket, double LevelSell, int Puntos)
      {
       Lotaje = OrderLots();
      }
-   Ticket = OrderSend(Symbol(), OP_SELLSTOP, Lotaje * 2, LevelSell, 5,
-                      LevelSell + (Puntos * Point *1.9), LevelSell - (Puntos * Point),
-                      NULL, 0, 0, clrAqua);
-   Alert("Hedge Sell");
+   if(Lotaje < MaxLots)
+     {
+      Ticket = OrderSend(Symbol(), OP_SELLSTOP, Lotaje * 2, LevelSell, 5,
+                         LevelSell + (Puntos * Point * STP), LevelSell - (Puntos * Point),
+                         NULL, 0, 0, clrAqua);
+      Alert("Hedge Sell");
+     }
+   else
+     {
+      Alert("Exede el maximo de lotes");
+     }
    return Ticket;
   }
-
 
 
 //+------------------------------------------------------------------+

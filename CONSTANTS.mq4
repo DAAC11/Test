@@ -18,3 +18,6 @@
 //+------------------------------------------------------------------+
 string ENTER = "\n";
 double VlrPunto = MarketInfo(NULL,MODE_POINT);
+string SignalAlert = "   /\    "+"\n"+
+                     "  /  \   "+"\n"+
+                     " /___\  "+"\n";

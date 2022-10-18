@@ -29,18 +29,18 @@ bool ObjCreateGrids(double GridCentral, double &GridLevels[], string &ObjetosCer
      {
       if(GridLevels[i] == GridCentral)
         {
-         ObjCreateLine(GridLevels[i], "Line " + i, clrAqua);
-         ObjetosCerados[i] = "Line " + (i);
+         ObjCreateLine(GridLevels[i], "Line " + IntegerToString(i), clrAqua);
+         ObjetosCerados[i] = "Line " + (IntegerToString(i));
         }
       if(GridLevels[i] > GridCentral)
         {
-         ObjCreateLine(GridLevels[i], "Line " + i, clrGreen);
-         ObjetosCerados[i] = "Line " + (i);
+         ObjCreateLine(GridLevels[i], "Line " + IntegerToString(i), clrGreen);
+         ObjetosCerados[i] = "Line " + (IntegerToString(i));
         }
       if(GridLevels[i] < GridCentral)
         {
-         ObjCreateLine(GridLevels[i], "Line " + i, clrRed);
-         ObjetosCerados[i] = "Line " + (i);
+         ObjCreateLine(GridLevels[i], "Line " + IntegerToString(i), clrRed);
+         ObjetosCerados[i] = "Line " + (IntegerToString(i));
         }
      }
    return true;
