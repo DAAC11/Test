@@ -282,3 +282,21 @@ int Liquidador()//Revisado
    return -1;
   }
 //+------------------------------------------------------------------+
+int Closer(int Ticket)
+  {
+   if(OrderSelect(Ticket, SELECT_BY_TICKET))
+     {
+      if(OrderType() == OP_BUY)
+        {
+         return OrderClose(OrderTicket(), OrderLots(), Bid, 5, clrWhite);
+        }
+      if(OrderType() == OP_SELL)
+        {
+         return OrderClose(OrderTicket(), OrderLots(), Ask, 5, clrWhite);
+        }
+     }
+   return -1;
+  }
+
+
+//+------------------------------------------------------------------+
